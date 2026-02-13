@@ -1,16 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+
+import Header from "./Components/Header";
+import Footor from "./Components/Footor";
+import Router from "./Router/Rout";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  
 
   return (
-    <>
-      
-    </>
-  )
+   
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Router />
+        </main>
+        <Footor/>
+      </div>
+   
+  );
 }
 
-export default App
+export default App;
