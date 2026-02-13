@@ -10,55 +10,18 @@ export default function Pages() {
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
 
-  // Function to handle file selection
+  // File selection handle karne ke liye (Sirf UI side)
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type === "application/pdf") {
       setFile(selectedFile);
-      setInput(selectedFile.name); // Show file name in input box
+      setInput(selectedFile.name);
     } else {
       alert("Please select a valid PDF file.");
     }
   };
 
-  // API Call Function (Handles both File and Text/Link)
-  const handleSummarize = async () => {
-    if (!input && !file) {
-      alert("Please paste a link, text, or upload a PDF first!");
-      return;
-    }
-
-    setLoading(true);
-    setSummary("");
-
-    try {
-      const formData = new FormData();
-      if (file) {
-        formData.append("file", file);
-      }
-      formData.append("text", input);
-      formData.append("language", lang);
-
-      const response = await fetch("http://localhost:5000/api/summarize", {
-        method: "POST",
-        body: formData, // Browser automatically sets the content-type boundary
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.summary) {
-        setSummary(data.summary);
-      } else {
-        alert(data.error || "Something went wrong.");
-      }
-    } catch (error) {
-      alert("Backend Server (Port 5000) is not running!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Function to copy summary text
+  // Copy function logic
   const copyText = () => {
     if (!summary) return;
     navigator.clipboard.writeText(summary);
@@ -78,6 +41,7 @@ export default function Pages() {
             StudyGenie AI
           </h1>
 
+          {/* Language Selector Buttons */}
           <div className="flex justify-center gap-4 mt-4">
             {["English", "Hindi"].map((l) => (
               <button
@@ -109,6 +73,7 @@ export default function Pages() {
               className="hidden"
             />
 
+            {/* Plus Button triggers file selection */}
             <button
               onClick={() => fileInputRef.current.click()}
               className={`p-3.5 hover:bg-white/5 rounded-xl transition ${file ? "text-blue-500" : "text-gray-400"}`}
@@ -127,7 +92,7 @@ export default function Pages() {
               value={input}
               onChange={(e) => {
                 setInput(e.target.value);
-                if (file) setFile(null); // Typing clears file selection
+                if (file) setFile(null);
               }}
               className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-lg placeholder:text-gray-600"
             />
@@ -137,27 +102,21 @@ export default function Pages() {
                 <FaMicrophone size={18} />
               </button>
 
+              {/* Action Button (Logic removed) */}
               <button
-                onClick={handleSummarize}
-                disabled={loading}
                 className={`bg-blue-600 hover:bg-blue-500 text-white p-3.5 rounded-xl transition shadow-[0_0_20px_rgba(37,99,235,0.3)] ${
                   loading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <HiOutlineSparkles size={20} />
-                )}
+                <HiOutlineSparkles size={20} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Summary Output Area */}
+        {/* Summary Area (Example static display) */}
         {summary && (
           <div className="w-full mt-6 p-6 bg-[#161b26] border border-white/10 rounded-2xl relative animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Copy Button */}
             <button
               onClick={copyText}
               className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
